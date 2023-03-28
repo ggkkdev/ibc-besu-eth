@@ -49,7 +49,7 @@ task("deploy:IBC")
     const miniTokenFactory: MiniToken__factory = <MiniToken__factory>await ethers.getContractFactory("MiniToken");
     const miniToken: MiniToken = <MiniToken>await miniTokenFactory.deploy(ibcHost.address, ibcHandler.address);
 
-    for (let val of [ibcHost, ibcHandler, miniToken]) {
+    for (const val of [ibcHost, ibcHandler, miniToken]) {
       console.log(val.address); // prints values: 10, 20, 30, 40
     }
     await ibcHost.setIBCModule(ibcHandler.address)

@@ -1,19 +1,9 @@
 import {task} from "hardhat/config";
 import type {TaskArguments} from "hardhat/types";
 
-import {
-  IBCClient__factory,
-  IBCHandler__factory,
-  IBCHost__factory,
-  IBCIdentifier__factory,
-  MiniToken,
-  MiniToken__factory
-} from "../../types";
-import {ContractFactory} from "ethers";
+import {MiniToken} from "../../types";
 import {SignerWithAddress} from "@nomiclabs/hardhat-ethers/signers";
 
-const MockClientType = "mock-client"
-const PortTransfer = "transfer"
 task("transfer:IBC")
   .setAction(async function (taskArguments: TaskArguments, {ethers}) {
     const port = "transfer";
