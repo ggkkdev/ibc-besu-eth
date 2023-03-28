@@ -1,14 +1,16 @@
 import "@nomicfoundation/hardhat-toolbox";
-import { config as dotenvConfig } from "dotenv";
-import type { HardhatUserConfig } from "hardhat/config";
-import type { NetworkUserConfig } from "hardhat/types";
-import { resolve } from "path";
+import {config as dotenvConfig} from "dotenv";
+import type {HardhatUserConfig} from "hardhat/config";
+import type {NetworkUserConfig} from "hardhat/types";
+import {resolve} from "path";
+
+require('hardhat-dependency-compiler');
 
 import "./tasks/accounts";
 import "./tasks/deploy";
 
 const dotenvConfigPath: string = process.env.DOTENV_CONFIG_PATH || "./.env";
-dotenvConfig({ path: resolve(__dirname, dotenvConfigPath) });
+dotenvConfig({path: resolve(__dirname, dotenvConfigPath)});
 
 // Ensure that we have all the environment variables we need.
 const mnemonic: string | undefined = process.env.MNEMONIC;
@@ -31,6 +33,7 @@ const chainIds = {
   "polygon-mainnet": 137,
   "polygon-mumbai": 80001,
   sepolia: 11155111,
+  goerli: 5,
 };
 
 function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
@@ -91,6 +94,28 @@ const config: HardhatUserConfig = {
     "polygon-mainnet": getChainConfig("polygon-mainnet"),
     "polygon-mumbai": getChainConfig("polygon-mumbai"),
     sepolia: getChainConfig("sepolia"),
+    goerli: getChainConfig("goerli"),
+    ibc0: {
+      url: "http://127.0.0.1:8645/",
+      gas: 1000000000,
+      allowUnlimitedContractSize: true,
+      accounts: {
+        mnemonic: mnemonic,
+        initialIndex: 0,
+        count: 20,
+      },
+    },
+    ibc1: {
+      url: "http://127.0.0.1:8745/",
+      allowUnlimitedContractSize: true,
+      gas: 10000000,
+      accounts: {
+        mnemonic: mnemonic,
+        initialIndex: 0,
+        count: 20,
+      },
+    },
+
   },
   paths: {
     artifacts: "./artifacts",
@@ -117,7 +142,18 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "types",
     target: "ethers-v5",
+    alwaysGenerateOverloads: true,
+    externalArtifacts: ['./artifacts/@hyperledger-labs/yui-ibc-solidity/contracts/core/IBCConnection.sol/IBCConnection.json',
+      './artifacts/@hyperledger-labs/yui-ibc-solidity/contracts/core/MockClient.sol/MockClient.json',
+    ], // optional array of glob patterns with external artifacts to process (for example external libs from node_modules)
   },
+
+  dependencyCompiler: {
+    paths: [
+      '@hyperledger-labs/yui-ibc-solidity/contracts/core/IBCConnection.sol',
+      '@hyperledger-labs/yui-ibc-solidity/contracts/core/MockClient.sol',
+    ],
+  }
 };
 
 export default config;
