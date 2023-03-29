@@ -28,8 +28,6 @@ network-down:
 migrate:
 	pnpm hardhat deploy:IBC --network ibc0
 	pnpm hardhat deploy:IBC --network ibc1
-	#npx hardhat run scripts/deploy.ts --network ibc0
-	#npx hardhat run scripts/deploy.ts --network ibc1
 
 # contract migration
 .PHONY: transfer
